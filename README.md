@@ -7,8 +7,8 @@ Our project is a software designed to take in a collection of PDFs specific to a
 * [Cabdul Ciise](https://cabdulciise.github.io/CIS641-HW2-Ciise/)
 
 ## Docs
-* [System Request](SystemRequest.md)
-* [System Proposal](SystemProposal.md)
+* [System Request](docs/SystemRequest.md)
+* [System Proposal](docs/SystemProposal.md)
 
 ## Prerequisites
 
