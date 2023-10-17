@@ -9,6 +9,7 @@ Our project is a software application designed to take in a collection of PDFs s
 ## Docs
 * [System Request](docs/SystemRequest.md)
 * [System Proposal](docs/SystemProposal.md)
+* [Software Requirements Spec](docs/SoftwareRequirementsSpec.md)
 
 ## Prerequisites
 

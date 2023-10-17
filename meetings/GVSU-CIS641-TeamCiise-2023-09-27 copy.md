@@ -1,10 +1,10 @@
-## Meeting minutes 09/30/2023
+## Meeting minutes 09/27/2023
 
 Team name: Team Ciise
 
 Members present: Cabdulqaadir Ciise
 
-Date: 09/30/2023
+Date: 09/27/2023
 
 Time: 5 pm
 
