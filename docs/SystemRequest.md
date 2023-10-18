@@ -10,7 +10,7 @@
 
 1. Enable quick and accurate answers to customer queries.
 2. Reduce costs associated with customer calls.
-3. Decrease incorrect produt orders and returns.
+3. Decrease incorrect product orders and returns.
 
 ### Business Requirements
 
