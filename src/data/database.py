@@ -54,31 +54,34 @@ class Database:
     
     def create_user(self, username, password, role):
         session = Session(self._engine)
-        stmt = insert(User).returning(User),
-        {
-            "username": username,
-            "password": get_hashed_password(password),
-            "role_id": 1 if role == "admin" else 2
-        }
+        stmt = insert(User).values(
+            username=username,
+            password=get_hashed_password(password),
+            role_id=1 if role == "admin" else 2
+        ).returning(User)
 
-        return session.scalar(statement=stmt)
+        added_user = session.scalar(statement=stmt)
+        session.commit()
+        return added_user
     
     def update_user(self, username, password, role):
         session = Session(self._engine)
-        stmt = update(User).where(User.username == username).returning(User),
-        {
-            "password": get_hashed_password(password),
-            "role_id": 1 if role == "admin" else 2
-        }
+        stmt = update(User).where(User.username == username).values(
+            password=get_hashed_password(password),
+            role_id=1 if role == "admin" else 2
+        ).returning(User)
 
-        return session.scalar(statement=stmt)
+        updated_user = session.scalar(statement=stmt)
+        session.commit()
+        return updated_user
     
     def update_user_custom_instruction(self, username, custom_instruction):
         session = Session(self._engine)
-        stmt = update(User).where(User.username == username).returning(User),
-        {
-            "custom_instruction": custom_instruction
-        }
+        stmt = update(User).where(User.username == username).values(
+            custom_instruction=custom_instruction
+        ).returning(User)
 
-        return session.scalar(statement=stmt)
+        updated_user = session.scalar(statement=stmt)
+        session.commit()
+        return updated_user
     
