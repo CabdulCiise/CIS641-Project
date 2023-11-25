@@ -14,8 +14,6 @@ Our project is a software application designed to take in a collection of PDFs s
 * [Change Management Plan](docs/ChangeManagementPlan.md)
 * [Tracebility Links](docs/TracebilityLinks.md)
 
-## Prerequisites
-
 ## Run Instructions
 
 * [Instructions](src/README.md)

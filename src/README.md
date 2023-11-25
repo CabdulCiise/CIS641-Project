@@ -1,3 +1,5 @@
+# Run Instructions
+
 Run the following command to create a virtual environment to manage packages
 
 ```bash
@@ -10,13 +12,13 @@ Then run the following to install all packages
 pip install -r requirements.txt
 ```
 
-Then run
+Then run either the console app by running
 
 ```bash
 python .\console.py
 ```
 
-or
+or the UI by running
 
 ```bash
 streamlit run .\app.py
