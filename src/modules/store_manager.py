@@ -18,8 +18,8 @@ class store_manager:
         self._vectorDb = Chroma(embedding_function=self._embedding_function, persist_directory=persist_directory)
 
     @property
-    def store(self):
-        return self._vectorDb
+    def retriever(self):
+        return self._vectorDb.as_retriever()
 
     def get_embeddings(self):
         if self._embedding_type == embedding_types.OPENAIEMBEDDINGS:
@@ -39,7 +39,7 @@ class store_manager:
         for collection in self._vectorDb._client.list_collections():
             ids_to_delete = [id for id in collection.get()['ids'] if id.startswith(pdf_file_name)]
             if ids_to_delete: 
-                print(f"deleting {len(ids_to_delete)} items")
+                #print(f"deleting {len(ids_to_delete)} items")
                 collection.delete(ids_to_delete)
 
         self._vectorDb.persist()

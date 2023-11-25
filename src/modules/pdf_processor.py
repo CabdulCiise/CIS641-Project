@@ -41,25 +41,6 @@ class pdf_processor:
         #print(f"Number of PDFs read in is {len(texts)}")
         return texts
     
-    # def get_pdf_text(self, pdf_file_paths: List[Any]) -> Dict[str, str]:
-    #     texts = {}
-    #     for pdf_file_path in pdf_file_paths:
-    #         if pdf_file_path is str:
-    #             file_name = Path(pdf_file_path).name
-    #             file_name_without_extension = os.path.splitext(file_name)[0]
-    #             key = file_name_without_extension
-    #         else:
-    #             key = pdf_file_path.name[:-4]
-
-    #         reader = PdfReader(pdf_file_path)
-
-    #         texts[key] = ""
-    #         for page in reader.pages:
-    #             texts[key] += page.extract_text()
-
-    #     print(f"Number of PDFs read in is {len(texts)}")
-    #     return texts
-    
     def get_text_chunks(self, pdf_texts: Dict[str, str]) -> Dict[str, List[str]]:
         pdf_in_chunks = {}
 
@@ -83,16 +64,3 @@ class pdf_processor:
 
         for key in text_chunks:
             self._store.add(pdf_file_name=key, text_chunks=text_chunks[key])
-
-    # def get_chunks_from_pdfs(self, pdf_files: List[Any] = None, pdf_files_dir: str = None) -> Dict[str, List[str]]:
-    #     if pdf_files:
-    #         print(f"Number of PDF files passed in is {len(list(pdf_files))}")
-    #         return self.get_text_chunks(self.get_pdf_text(pdf_files))
-    #     elif pdf_files_dir:
-    #         path = Path(pdf_files_dir)
-    #         pdf_file_paths = [str(f) for f in path.glob('*.pdf')]
-            
-    #         print(f"Number of PDF files in \"{path.name}\" directory is {len(list(pdf_file_paths))}")
-    #         return self.get_text_chunks(self.get_pdf_text(pdf_file_paths))
-    #     else:
-    #         raise ValueError("Either 'pdf_files' or 'pdf_files_dir' must be provided.")
