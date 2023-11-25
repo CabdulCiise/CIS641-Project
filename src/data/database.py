@@ -75,7 +75,7 @@ class Database:
         session.commit()
         return updated_user
     
-    def update_user_custom_instruction(self, username, custom_instruction):
+    def update_custom_instruction(self, username, custom_instruction):
         session = Session(self._engine)
         stmt = update(User).where(User.username == username).values(
             custom_instruction=custom_instruction

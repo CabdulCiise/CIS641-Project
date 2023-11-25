@@ -43,6 +43,9 @@ class UserHandler:
             login = input("\nLogin: ")
             parts = login.split()
 
+            if "-h" in parts:
+                self.show_help()
+
             username, password, role = self.parse_user_info(parts)
 
             if username is not None and password is not None:
@@ -128,7 +131,7 @@ class UserHandler:
                 custom_instruction = parts[i + 1]
 
         if custom_instruction:
-            self._database.update_user_custom_instruction(username, custom_instruction)
+            self._database.update_custom_instruction(username, custom_instruction)
         else:
             print("Invalid command format. Add new custom instruction after -i.")
 

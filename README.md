@@ -13,6 +13,7 @@ Our project is a software application designed to take in a collection of PDFs s
 * [Software Requirements Spec](docs/SoftwareRequirementsSpec_final.md)
 * [Change Management Plan](docs/ChangeManagementPlan.md)
 * [Tracebility Links](docs/TracebilityLinks.md)
+* [Software Artifacts](docs/SoftwareArtifacts.md)
 
 ## Run Instructions
 
