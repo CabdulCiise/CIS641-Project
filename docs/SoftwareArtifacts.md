@@ -19,3 +19,5 @@ This documents contains links to all the software artifacts relating to this pro
 <img src="../artifacts/PartialWindowsNavigationDiagram.png" alt="Windows Navigation Diagram" width="750"/>
 
 ## Class Diagram
+
+<img src="../artifacts/ClassDiagram.png" alt="Class Diagram" width="750"/>
