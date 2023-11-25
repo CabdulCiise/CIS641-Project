@@ -63,7 +63,6 @@ class UploadedDoc(Base):
 
     uploaded_doc_id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
-    checksum: Mapped[int] = mapped_column(nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.user_id"), nullable=False)
 
     user: Mapped["User"] = relationship(back_populates="uploaded_docs")

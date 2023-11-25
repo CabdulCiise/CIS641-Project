@@ -115,3 +115,26 @@ class Database:
         updated_feedback = session.scalar(statement=stmt)
         session.commit()
         return updated_feedback
+    
+    def create_uploaded_doc(self, user_id, file_name):
+        session = Session(self._engine)
+        stmt = insert(UploadedDoc).values(
+            user_id=user_id,
+            name=file_name,
+        ).returning(UploadedDoc)
+
+        added_file = session.scalar(statement=stmt)
+        session.commit()
+        return added_file
+    
+    def delete_uploaded_doc(self, file_name):
+        session = Session(self._engine)
+        stmt = delete(UploadedDoc).where(UploadedDoc.name == file_name)
+
+        session.execute(statement=stmt)
+        session.commit()
+    
+    def get_uploaded_docs(self):
+        session = Session(self._engine)
+        stmt = select(UploadedDoc)
+        return session.scalars(statement=stmt)
