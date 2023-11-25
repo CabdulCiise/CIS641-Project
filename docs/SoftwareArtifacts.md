@@ -21,3 +21,8 @@ This documents contains links to all the software artifacts relating to this pro
 ## Class Diagram
 
 <img src="../artifacts/ClassDiagram.png" alt="Class Diagram" width="750"/>
+
+
+## Relational Schema Diagram
+
+<img src="../artifacts/RelationalSchemaDiagram.png" alt="Relational Schema Diagram" width="750"/>
