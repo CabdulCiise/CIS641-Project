@@ -96,10 +96,10 @@ Below are a list of both functional and non-funcational requiremnts for the new 
 | ID | Requirement |
 | ----- | ----------- |
 | NFR16 | The system's codebase shall be well-documented following industry-standard practices. |
-| NFR17 | The system's user interface shall be responsive and compatible with modern web browsers. |
-| NFR18 |  |
-| NFR19 |  |
-| NFR20 |  |
+| NFR17 | The system shall provide clear and user-friendly error messages in case of query or operation failures. |
+| NFR18 | The system shall provide on-screen help menu to assist users in using the application effectively. |
+| NFR19 | The system shall conduct user testing and gather feedback to continuously improve the user experience. |
+| NFR20 | The system shall provide an intuitive user interface. |
 
 ### Maintenance and Operations
 
