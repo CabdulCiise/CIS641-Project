@@ -1,4 +1,4 @@
-from data.models import Base, Role, User
+from data.models import Base, Role, User, UserFeedback, UploadedDoc
 from modules.helpers import get_hashed_password
 from modules.globals import pdf_files_dir
 
@@ -85,3 +85,33 @@ class Database:
         session.commit()
         return updated_user
     
+    def get_user_feedbacks(self, include_archived=False):
+        session = Session(self._engine)
+        stmt = select(UserFeedback)
+        
+        if not include_archived:
+            stmt = stmt.where(UserFeedback.is_archived == False)
+
+        return session.scalars(statement=stmt)
+
+    def create_user_feedback(self, user_id, feedback):
+        session = Session(self._engine)
+        stmt = insert(UserFeedback).values(
+            user_id=user_id,
+            is_archived=False,
+            feedback=feedback,
+        ).returning(UserFeedback)
+
+        added_feedback = session.scalar(statement=stmt)
+        session.commit()
+        return added_feedback
+    
+    def update_user_feedback(self, user_feedback_id, is_archived):
+        session = Session(self._engine)
+        stmt = update(UserFeedback).where(UserFeedback.user_feedback_id == user_feedback_id).values(
+            is_archived=is_archived
+        ).returning(UserFeedback)
+
+        updated_feedback = session.scalar(statement=stmt)
+        session.commit()
+        return updated_feedback
