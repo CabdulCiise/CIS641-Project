@@ -22,7 +22,10 @@ This documents contains links to all the software artifacts relating to this pro
 
 <img src="../artifacts/ClassDiagram.png" alt="Class Diagram" width="750"/>
 
-
 ## Relational Schema Diagram
 
 <img src="../artifacts/RelationalSchemaDiagram.png" alt="Relational Schema Diagram" width="750"/>
+
+## Activity Diagrams (these no longer apply)
+
+<img src="../artifacts/ActivityDiagrams.png" alt="Activity Diagrams" width="750"/>
