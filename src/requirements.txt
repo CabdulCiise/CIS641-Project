@@ -1,0 +1,10 @@
+langchain
+PyPDF2
+python-dotenv
+streamlit
+streamlit-extras
+openai
+tiktoken
+sqlalchemy
+bcrypt
+chromadb
