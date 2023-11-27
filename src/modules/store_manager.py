@@ -1,6 +1,6 @@
 from typing import List
 
-from constants import OPEN_AI_API_KEY
+from modules.constants import OPEN_AI_API_KEY
 from modules.embedding_types import embedding_types
 
 from langchain.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings

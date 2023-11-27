@@ -1,6 +1,6 @@
 from typing import Any
 
-from constants import OPEN_AI_API_KEY
+from modules.constants import OPEN_AI_API_KEY
 
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
