@@ -9,7 +9,7 @@ This document depicts the links between requirements and artifacts (use case dia
 | UseCase1 | Submit Query | FR1, |
 | UseCase2 | Generate Response | NFR10 |
 | UseCase3 | Create New User | NFR11 |
-| UseCase4 | Update Custom Instruction | |
+| UseCase4 | Update Custom Instruction | FR2, FR4 |
 | UseCase5 | Login/Logout | NFR11 |
 | UseCase6 | Take User Feedback | FR21 |
 
