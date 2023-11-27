@@ -17,11 +17,10 @@ This document depicts the links between requirements and artifacts (use case dia
 
 | Artifact ID | Artifact Name | Requirement ID |
 | :---------: | :-----------: | :------------: |
-| UseCase7 | Change PDF Directory | FR3, FR13 |
-| UseCase8 | Train AI Model | FR3, FR4, FR17 |
-| UseCase9 | Update User Role | FR15 |
-| UseCase10 | Archive User Feedback | FR24 |
-| UseCase11 | Review User Feedback | FR23, FR25, NFR19 |
+| UseCase7  | Train AI Model | FR3, FR4, FR13, FR17 |
+| UseCase8  | Update User Role | FR15 |
+| UseCase9  | Archive User Feedback | FR24 |
+| UseCase10 | Review User Feedback | FR23, FR25, NFR19 |
 
 ## Overall Class Diagram Traceability
 
