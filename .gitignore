@@ -6,3 +6,4 @@ src/data/__pycache__/
 src/vector_store/
 src/samples/
 src/data/database.sqlite3
+src/__pycache__/
