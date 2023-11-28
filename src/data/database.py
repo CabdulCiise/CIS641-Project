@@ -36,7 +36,7 @@ def initialize_table(target, connection, **kw):
 class Database:
     def __init__(self, echo=False):
         self._engine = create_engine("sqlite:///data/database.sqlite3", echo=echo, future=True)
-        self._engine.connect()
+        self._connection = self._engine.connect()
 
     def setup_seeding_events(self):
         event.listen(Role.__table__, 'after_create', initialize_table)
@@ -85,25 +85,29 @@ class Database:
         session.commit()
         return updated_user
     
-    def get_user_feedbacks(self, include_archived=False):
+    def get_roles(self):
         session = Session(self._engine)
+        stmt = select(Role)
+
+        return session.scalars(statement=stmt).all()
+    
+    def get_user_feedbacks(self, include_archived=False):
         stmt = select(UserFeedback)
         
         if not include_archived:
             stmt = stmt.where(UserFeedback.is_archived == False)
 
-        return session.scalars(statement=stmt)
+        return self._connection.scalars(statement=stmt).all()
 
     def create_user_feedback(self, user_id, feedback):
-        session = Session(self._engine)
         stmt = insert(UserFeedback).values(
             user_id=user_id,
             is_archived=False,
             feedback=feedback,
         ).returning(UserFeedback)
 
-        added_feedback = session.scalar(statement=stmt)
-        session.commit()
+        added_feedback = self._connection.execute(statement=stmt).fetchone()
+        self._connection.commit()
         return added_feedback
     
     def update_user_feedback(self, user_feedback_id, is_archived):
@@ -112,8 +116,8 @@ class Database:
             is_archived=is_archived
         ).returning(UserFeedback)
 
-        updated_feedback = session.scalar(statement=stmt)
-        session.commit()
+        updated_feedback = self._connection.execute(statement=stmt).fetchone()
+        self._connection.commit()
         return updated_feedback
     
     def create_uploaded_doc(self, user_id, file_name):
