@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 
 from data.database import Database
@@ -63,7 +63,10 @@ def update_custom_instructions():
         body = request.json
         user_id = body["user_id"]
         custom_instruction = body["custom_instruction"]
-        return jsonify(UserSchema().dump(database.update_custom_instruction(user_id, custom_instruction)))
+        
+        updated_user = jsonify(UserSchema().dump(database.update_custom_instruction(user_id, custom_instruction)))
+        chain.reset_chat(custom_instructions=custom_instruction)
+        return updated_user
     
     return jsonify("Error failed to update user custom instructions")
 
@@ -111,14 +114,13 @@ def document():
         
     return jsonify("Error failed to register")
     
-@app.route('/chat', methods=['POST'])
+@app.route('/chat', methods=['GET'])
 def chat():
-    if request.method == 'POST':
+    if request.method == 'GET':
         user_id = request.args["user_id"]
-        query = request.json["query"]
+        query = request.args["query"]
         
-        response = chain.new_query(query)
-        return jsonify(response)
+        return Response(chain.new_query_stream(query), mimetype='text/plain')
         
     return jsonify("Error failed to get chat response")
 

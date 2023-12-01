@@ -16,6 +16,7 @@
 			<div class="chat__bar">
 				<span class="chat__input p-input-icon-right">
 					<InputText v-model="query"
+							autofocus
 							placeholder="What do you want to ask?"
 							type="input"
 							@keydown.enter="onNewQuery"/>
@@ -23,8 +24,9 @@
 				</span>
 				<Button icon="pi pi-refresh"
 						text
+						disabled="!!messages"
 						v-tooltip.top="'Reset'"
-						@click=""/>
+						@click="onChatReset"/>
 
 			</div>
 		</div>
@@ -35,6 +37,7 @@
 import axios from 'axios'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+import { nextTick } from 'vue'
 
 export default {
 	props: {
@@ -67,18 +70,48 @@ export default {
 				this.getResponse(currentQuery);
 			}
 		},
-		getResponse(currentQuery) {
-			axios.post(`http://localhost:5000/chat?user_id=${this.loggedInUser.user_id}`, {
-				'query': currentQuery
-			})
+		async getResponse(currentQuery) {
+			const res = await fetch('http://localhost:5000/chat?' + new URLSearchParams({
+				user_id: this.loggedInUser.user_id,
+				query: currentQuery
+			}));
+
+			if (res.ok) {
+				const reader = res.body.getReader();
+				const textDecoder = new TextDecoder();
+
+				while (true) {
+					const { done, value } = await reader.read();
+
+					if (done) {
+						break;
+					}
+					
+					const chunkText = textDecoder.decode(value);
+					this.addToLastMessage(chunkText)
+				}
+				this.isHandlingAQuery = false;
+			}
+		},
+		onChatReset() {
+			this.messages = [];
+		},
+		chatReset() {
+			axios.post('http://localhost:5000/chat/reset')
 				.then((res) => {
-					this.messages[this.messages.length - 1].response = res.data;
-					this.isHandlingAQuery = false;
 				})
 				.catch((error) => {
 					console.error(error);
-					this.isHandlingAQuery = false;
 				});
+		},
+		addToLastMessage(chunk) {
+			console.log(chunk);
+			if (this.messages[this.messages.length - 1].response == null) {
+				this.messages[this.messages.length - 1].response = chunk;
+			}
+			else {
+				this.messages[this.messages.length - 1].response += chunk;
+			}
 		}
 	}
 }
@@ -152,7 +185,7 @@ export default {
 			background: $background;
 		}
 	}
-	&__response {
+	&__query {
 		color: $queryBubbleText;
 		background: $queryBubbleBg;
 		float: right;
@@ -168,7 +201,7 @@ export default {
 		}
 	}
 
-	&__query {
+	&__response {
 		color: $responseBubbleText;
 		background: $responseBubbleBg;
 		float: left;
