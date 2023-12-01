@@ -48,7 +48,7 @@ def get_roles():
     return jsonify(RoleSchema(many=True).dump(database.get_roles()))
 
 @app.route('/user', methods=['GET', 'PUT'])
-def get_users():
+def users():
     if request.method == 'PUT':
         body = request.json
         user_id = body["user_id"]
@@ -56,6 +56,16 @@ def get_users():
         return jsonify(UserSchema().dump(database.update_user(user_id, role)))
     else:
         return jsonify(UserSchema(many=True).dump(database.get_users()))
+    
+@app.route('/user/custom-instructions', methods=['PUT'])
+def update_custom_instructions():
+    if request.method == 'PUT':
+        body = request.json
+        user_id = body["user_id"]
+        custom_instruction = body["custom_instruction"]
+        return jsonify(UserSchema().dump(database.update_custom_instruction(user_id, custom_instruction)))
+    
+    return jsonify("Error failed to update user custom instructions")
 
 @app.route('/login', methods=['POST'])
 def login():

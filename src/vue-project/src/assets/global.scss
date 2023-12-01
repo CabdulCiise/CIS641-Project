@@ -1,0 +1,30 @@
+$background: #121212;
+$sidebar: #000000;
+$border: #4d4d4d;
+$btn-bg: #38BDF8;
+$btn-color: #000000;
+$queryBubbleBg: #38BDF8;
+$queryBubbleText: #000000;
+$responseBubbleBg: #272727;
+$responseBubbleText: #FFFFFF;
+
+body {
+	margin: 0;
+	background: $background;
+}
+
+.p-button:not(.p-button-text) {
+	background: $btn-bg;
+	border: darken($btn-bg, 10%);
+	&:hover {
+		background: darken($btn-bg, 10%);
+	}
+}
+.p-button-text {
+	padding: 0;
+	color: $btn-bg;
+	font-size: 1.25rem;
+	&:hover {
+		color: darken($btn-bg, 10%);
+	}
+}

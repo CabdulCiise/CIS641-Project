@@ -24,11 +24,18 @@ class chat_chain:
             | StrOutputParser()
         )
 
-    def get_prompt(self):
-        template = """Answer the question based only on the following context: {context}
-            If a question is not related to this context, respond with "I am not sure on this"
-            Question: {question}
-            """
+    def get_prompt(self, custom_instructions=None):
+        if custom_instructions:
+            template = f"""Answer the question based only on the following context: {{context}}
+                If a question is not related to this context, respond with "I am not sure on this".
+                Also, here are custom instructions to consider as well. {custom_instructions}
+                Question: {{question}}
+                """
+        else:
+            template = """Answer the question based only on the following context: {context}
+                If a question is not related to this context, respond with "I am not sure on this"
+                Question: {question}
+                """
         return ChatPromptTemplate.from_template(template)
         
     def get_llm_model(self):
@@ -41,6 +48,14 @@ class chat_chain:
     # def new_query(self, question: str) -> Any:
     #     for chunk in self._chain.stream(question):
     #         print(chunk, end="", flush=True)
+
+    def reset_chat(self):
+        self._chain = (
+            {"context": self._retriever | format_docs, "question": RunnablePassthrough()}
+            | self._prompt
+            | self._llm
+            | StrOutputParser()
+        )
 
     def new_query(self, question: str) -> Any:
         return self._chain.invoke(question)

@@ -9,11 +9,13 @@ import 'primeicons/primeicons.css';
 
 import PrimeVue from 'primevue/config';
 import PrimeIcons from 'primevue/config';
+import Tooltip from 'primevue/tooltip';
 
 const app = createApp(App);
 
 app.use(router);
 app.use(PrimeVue);
 app.use(PrimeIcons);
+app.directive('tooltip', Tooltip);
 
 app.mount('#app')

@@ -70,21 +70,20 @@ class Database:
     def update_user(self, user_id, role):
         session = Session(self._engine)
         stmt = update(User).where(User.user_id == user_id).values(
-            role_id=1 if role == "admin" else 2
+            role_id=1 if role == "admin" else 2,
         ).returning(User)
 
         updated_user = session.scalar(statement=stmt)
         session.commit()
         return updated_user
     
-    def update_custom_instruction(self, username, custom_instruction):
-        session = Session(self._engine)
-        stmt = update(User).where(User.username == username).values(
+    def update_custom_instruction(self, user_id, custom_instruction):
+        stmt = update(User).where(User.user_id == user_id).values(
             custom_instruction=custom_instruction
         ).returning(User)
 
-        updated_user = session.scalar(statement=stmt)
-        session.commit()
+        updated_user = self._connection.execute(statement=stmt).fetchone()
+        self._connection.commit()
         return updated_user
     
     def get_roles(self):

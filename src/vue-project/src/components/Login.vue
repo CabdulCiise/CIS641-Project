@@ -1,32 +1,32 @@
 <template>
-    <Dialog 
-        modal 
+    <Dialog
+        modal
         v-model:visible="loginModalVisible"
         header="LOG IN"
         :closable="false"
         :draggable="true"
         >
-        <div class="card flex justify-content-center">
-            <form @submit.prevent="submitLogin" class="">
-                <InputText type="input" class="" placeholder="Enter Username" autofocus v-model="username"></InputText>
-                <InputText type="password" class="" placeholder="Password" v-model="password"></InputText>
-                <Button type="submit" raised class="" label="Sign In"></Button>
-                <div class="">Don't have an account? <a href="#" @click.prevent="onRegistering">Register</a></div>
+        <div class="login-dialog">
+            <form @submit.prevent="submitLogin" class="login-dialog__form">
+                <InputText type="input" class="login-dialog__input" placeholder="Enter Username" autofocus v-model="username"></InputText>
+                <InputText type="password" class="login-dialog__input" placeholder="Password" v-model="password"></InputText>
+                <Button type="submit" raised class="login-dialog__submit" label="Sign In"></Button>
+                <div class="login-dialog__register">Don't have an account? <a href="#" @click.prevent="onRegistering">Register</a></div>
             </form>
         </div>
     </Dialog>
-    <Dialog 
-        modal 
+    <Dialog
+        modal
         v-model:visible="registerModalVisible"
         header="CREATE AN ACCOUNT"
         :closable="false"
         :draggable="true">
-        <div class="row justify-content-center">
-            <form @submit.prevent="register" class="col-7 mt-3">
-                <InputText type="input" class="form-control mb-3 col-8" placeholder="Enter Username" required autofocus v-model="username"></InputText>
-                <InputText type="password" class="form-control mb-3" placeholder="Password" required v-model="password"></InputText>
-                <InputText type="password" class="form-control mb-3" placeholder="Repeat your password" required v-model="passwordRepeat"></InputText>
-                <Button type="submit" class="btn btn-lg btn-primary col-12 mb-3">Register</Button>
+        <div class="register-dialog">
+            <form @submit.prevent="register" class="register-dialog__form">
+                <InputText type="input" class="register-dialog__input" placeholder="Enter Username" required autofocus v-model="username"></InputText>
+                <InputText type="password" class="register-dialog__input" placeholder="Password" required v-model="password"></InputText>
+                <InputText type="password" class="register-dialog__input" placeholder="Repeat your password" required v-model="passwordRepeat"></InputText>
+                <Button type="submit" class="register-dialog__submit">Register</Button>
             </form>
         </div>
     </Dialog>
@@ -93,9 +93,25 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .p-dialog-content {
     width: 100%;
     height: 100%;
+}
+.register-dialog,
+.login-dialog {
+	&__form {
+		width: 20rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	&__submit {
+		justify-content: center
+	}
+	&__register {
+		border-top: 1px solid $border;
+		padding-top: 1rem;
+	}
 }
 </style>

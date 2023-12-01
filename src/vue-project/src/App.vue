@@ -8,10 +8,10 @@ import { RouterLink, RouterView } from 'vue-router'
       <RouterLink to="/user-feedback">User Feedback</RouterLink>
     </nav>
   </header> -->
-  
+
   <RouterView />
 </template>
 
-<style scoped>
+<style lang="scss">
 
 </style>
