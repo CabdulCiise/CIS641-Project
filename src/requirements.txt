@@ -10,3 +10,4 @@ bcrypt
 chromadb
 Flask
 marshmallow-sqlalchemy
+flask_cors

@@ -1,6 +1,8 @@
+import datetime
 from typing import List, Optional
-from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
+from sqlalchemy import Column, ForeignKey, Integer, String, create_engine, DateTime
 from sqlalchemy.orm import Mapped, DeclarativeBase, relationship, backref, mapped_column
+from sqlalchemy.sql import func
 
 class Base(DeclarativeBase):
     pass
@@ -11,7 +13,7 @@ class Role(Base):
     role_id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
 
-    users: Mapped[List["User"]] = relationship(back_populates="role", cascade="all, delete-orphan")
+    #role_users: Mapped[List["User"]] = relationship('User', backref="user_role", cascade="all, delete-orphan")
 
     def __repr__(self) -> str:
         return (
@@ -27,11 +29,11 @@ class User(Base):
     password: Mapped[str] = mapped_column(nullable=False)
     custom_instruction: Mapped[str] = mapped_column(nullable=True)
     last_chat: Mapped[str] = mapped_column(nullable=True)
-    role_id: Mapped[int] = mapped_column(ForeignKey("role.role_id"), nullable=False)
+    user_role_id: Mapped[int] = mapped_column(ForeignKey("role.role_id"), nullable=False)
 
-    role: Mapped["Role"] = relationship(back_populates="users")
-    user_feedbacks: Mapped[List["UserFeedback"]] = relationship(back_populates="user", cascade="all, delete-orphan")
-    uploaded_docs: Mapped[List["UploadedDoc"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    user_role: Mapped["Role"] = relationship('Role', backref="role_users", foreign_keys=[user_role_id])
+    # feedbacks: Mapped[List["UserFeedback"]] = relationship('UserFeedback', backref="owner", cascade="all, delete-orphan")
+    # documents: Mapped[List["UploadedDoc"]] = relationship('UploadedDoc', backref="uploader", cascade="all, delete-orphan")
 
     def __repr__(self):
         return (
@@ -44,11 +46,12 @@ class UserFeedback(Base):
     __tablename__ = "user_feedback"
 
     user_feedback_id: Mapped[int] = mapped_column(primary_key=True)
+    created_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     feedback: Mapped[str] = mapped_column(nullable=False)
     is_archived: Mapped[bool] = mapped_column(nullable=False, default=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.user_id"), nullable=False)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("user.user_id"), nullable=False)
 
-    user: Mapped["User"] = relationship(back_populates="user_feedbacks")
+    # owner: Mapped["User"] = relationship('User', backref="feedbacks", foreign_keys=[owner_id])
 
     def __repr__(self):
         return (
@@ -63,9 +66,10 @@ class UploadedDoc(Base):
 
     uploaded_doc_id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.user_id"), nullable=False)
+    created_date: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    uploader_id: Mapped[int] = mapped_column(ForeignKey("user.user_id"), nullable=False)
 
-    user: Mapped["User"] = relationship(back_populates="uploaded_docs")
+    # uploader: Mapped["User"] = relationship('User', backref="documents", foreign_keys=[uploader_id])
 
     def __repr__(self):
         return (

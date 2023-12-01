@@ -1,4 +1,4 @@
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, SQLAlchemySchema
 import bcrypt
 
 from data.models import User, Role, UserFeedback, UploadedDoc

@@ -1,4 +1,5 @@
 <template>
+    <h2>Upload New Documents</h2>
     <FileUpload name="demo[]" url="/api/upload" @upload="onTemplatedUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
     <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
         <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
@@ -50,15 +51,66 @@
         </div>
     </template>
 </FileUpload>
+    <h2>Delete Documents</h2>
+    <DataTable
+            :value="uploadedDocs"
+            paginator
+            :rows="5"
+            :rowsPerPageOptions="[5, 10, 20, 50]"
+            >
+            <Column field="username" header="Username" style="width: 10%"></Column>
+            <Column field="date" header="Date" style="width: 10%"></Column>
+            <Column field="feedback" header="Feedback" style="width: 80%"></Column>
+        </DataTable>
 </template>
 
 <script>
-import FileUpload from 'primevue/fileupload';
+import axios from 'axios'
+import FileUpload from 'primevue/fileupload'
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Button from 'primevue/button';
+import Badge from 'primevue/badge';
+import ProgressBar from 'primevue/progressbar';
 
 export default {
-    
-}
-</script>
+    props: {},
+    components: {
+        FileUpload,
+        DataTable,
+        Column,
+        Button,
+        Badge,
+        ProgressBar
+    },
+    data() {
+        return {
 
-<style scoped>
-</style>
+        }
+    },
+    methods: {
+        getUploadedDocuments() {
+            axios.get('http://localhost:5000/document')
+                .then((res) => {
+                    this.userFeedbacks = res.data;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        },
+        uploadDocument() {
+            axios.put(`http://localhost:5000/user-feedback/archive?user_feedback_id=${user_feedback_id}`)
+                .then((res) => {
+                    this.getUserFeedbacks()
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    },
+    created() {
+        this.getUploadedDocuments();
+    }
+}
+
+</script>

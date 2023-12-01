@@ -37,7 +37,10 @@ class chat_chain:
 
         # HuggingFace Model
         return HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
-    
+
+    # def new_query(self, question: str) -> Any:
+    #     for chunk in self._chain.stream(question):
+    #         print(chunk, end="", flush=True)
+
     def new_query(self, question: str) -> Any:
-        for chunk in self._chain.stream(question):
-            print(chunk, end="", flush=True)
+        return self._chain.invoke(question)

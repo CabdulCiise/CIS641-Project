@@ -16,14 +16,14 @@ INITIAL_DATA = {
             'last_name': 'Test',
             'username': 'admin',
             'password': get_hashed_password('admin'),
-            'role_id': 1
+            'user_role_id': 1
         },
         {
             'first_name': 'User',
             'last_name': 'Test',
             'username': 'user',
             'password': get_hashed_password('user'),
-            'role_id': 2
+            'user_role_id': 2
         }
     ]
 }
@@ -47,27 +47,29 @@ class Database:
         Base.metadata.create_all(bind=self._engine)
 
     def get_user(self, username):
-        session = Session(self._engine)
         stmt = select(User).where(User.username == username)
 
-        return session.scalar(statement=stmt)
+        return self._connection.execute(statement=stmt).fetchone()
     
-    def create_user(self, username, password, role):
-        session = Session(self._engine)
+    def get_users(self):
+        stmt = select(User)
+
+        return self._connection.execute(statement=stmt).fetchall()
+    
+    def create_user(self, username, password, role="user"):
         stmt = insert(User).values(
             username=username,
             password=get_hashed_password(password),
-            role_id=1 if role == "admin" else 2
+            user_role_id=1 if role == "admin" else 2
         ).returning(User)
 
-        added_user = session.scalar(statement=stmt)
-        session.commit()
+        added_user = self._connection.execute(statement=stmt).fetchone()
+        self._connection.commit()
         return added_user
     
-    def update_user(self, username, password, role):
+    def update_user(self, user_id, role):
         session = Session(self._engine)
-        stmt = update(User).where(User.username == username).values(
-            password=get_hashed_password(password),
+        stmt = update(User).where(User.user_id == user_id).values(
             role_id=1 if role == "admin" else 2
         ).returning(User)
 
@@ -97,7 +99,7 @@ class Database:
         if not include_archived:
             stmt = stmt.where(UserFeedback.is_archived == False)
 
-        return self._connection.scalars(statement=stmt).all()
+        return self._connection.execute(statement=stmt).fetchall()
 
     def create_user_feedback(self, user_id, feedback):
         stmt = insert(UserFeedback).values(
