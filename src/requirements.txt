@@ -1,13 +1,11 @@
 langchain
 PyPDF2
 python-dotenv
-streamlit
-streamlit-extras
 openai
 tiktoken
+Flask
+flask_cors
 sqlalchemy
+marshmallow-sqlalchemy
 bcrypt
 chromadb
-Flask
-marshmallow-sqlalchemy
-flask_cors

@@ -38,6 +38,8 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 
+import { showNotification } from "@/services/notification";
+
 export default {
     props: {},
     components: {
@@ -63,8 +65,13 @@ export default {
                 'password': this.password
             })
             .then((res) => {
-                this.loggedInUser = res.data;
-                this.$emit('logged-in', this.loggedInUser);
+                if (res.data.success) {
+                        this.loggedInUser = res.data;
+                        this.$emit('logged-in', this.loggedInUser);
+                    }
+                    else {
+                        showNotification("Error", "Login failed.", "success", 2000);
+                    }
             })
             .catch((error) => {
                 console.error(error);
@@ -77,12 +84,20 @@ export default {
                     'password': this.password
                 })
                 .then((res) => {
-                    this.loggedInUser = res.data;
-                    this.$emit('logged-in', this.loggedInUser);
+                    if (res.data.success) {
+                        this.loggedInUser = res.data;
+                        this.$emit('logged-in', this.loggedInUser);
+                    }
+                    else {
+                        showNotification("Error", res.data.errorMessage, "success", 2000);
+                    }
                 })
                 .catch((error) => {
                     console.error(error);
                 });
+            }
+            else {
+                showNotification("Error", "Passwords do not match.", "success", 2000);
             }
         },
         onRegistering() {

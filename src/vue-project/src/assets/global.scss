@@ -12,7 +12,13 @@ body {
 	margin: 0;
 	background: $background;
 }
-
+.p-tabview-header:not(.p-highlight) .p-tabview-header-action {
+	background: transparent;
+	border: 0;
+}
+.p-datatable-wrapper {
+	background: #2b323d;
+}
 .p-button:not(.p-button-text) {
 	background: $btn-bg;
 	border: darken($btn-bg, 10%);

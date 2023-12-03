@@ -1,32 +1,36 @@
 <template>
-  <Login @logged-in="onLoggedIn" v-if="!loggedInUser"/>
+	<Login @logged-in="onLoggedIn" v-if="!loggedInUser"/>
 
 	<div v-else class="home">
 		<div class="home__sidebar">
-            <Button icon="pi pi-comments"
+			<Button icon="pi pi-comments"
 			        v-tooltip="'Chat'"
 			        @click="showChat = true"/>
-			<Button icon="pi pi-thumbs-up"
-			        v-tooltip="'User Feedback'"
-			        @click="showUserFeedback = true"/>
 			<Button icon="pi pi-file-edit"
 			        v-tooltip="'Document Editor'"
 			        @click="showDocumentEditor = true"/>
-			<Button icon="pi pi-user"
-			        v-tooltip="'Profile Editor'"
-			        @click="showProfileEditor = true"/>
-            <Button icon="pi pi-sign-out"
-			        v-tooltip="'Logout'"
-			        @click="onLoggedOut"/>
+			<Button icon="pi pi-users"
+			        v-tooltip="'Users'"
+			        @click="showUsers = true"/>
+			<Button icon="pi pi-check"
+			        v-tooltip="'Review Feedback'"
+			        @click="showUserFeedback = true"/>
 		</div>
 		<div class="home__content">
 			<div class="home__header">
-				<label class="home__user">Hi there, {{ loggedInUser.username }}</label>
+				<label class="home__welcome">PDF Query Tool</label>
+				<div class="home__profile">
+					<label class="home__user">Hi there, {{ loggedInUser.username }}</label>
+					<Button icon="pi pi-user" text type="button" @click="toggleMenu"
+					        aria-haspopup="true" aria-controls="overlay_menu"/>
+					<Menu ref="menu" id="overlay_menu" :model="items" :popup="true"/>
+				</div>
 			</div>
 			<div class="home__body">
+				<ProfileEditor v-if="showProfileEditor" :logged-in-user="loggedInUser"/>
+				<User v-if="showUsers"/>
 				<UserFeedback v-if="showUserFeedback"/>
 				<DocumentEditor v-if="showDocumentEditor"/>
-				<ProfileEditor v-if="showProfileEditor" :logged-in-user="loggedInUser" />
 				<Chat v-if="showChat" :logged-in-user="loggedInUser"/>
 			</div>
 		</div>
@@ -40,111 +44,105 @@ import ProfileEditor from '../components/ProfileEditor.vue'
 import UserFeedback from '../components/UserFeedback.vue'
 import User from '../components/User.vue'
 import DocumentEditor from '../components/DocumentEditor.vue'
-
 import Button from 'primevue/button'
+import Menu from 'primevue/menu'
+import {PrimeIcons} from 'primevue/api';
+import { nextTick } from 'vue'
 
 export default {
-    props: {},
-    components: {
-        Login,
-        Chat,
-        ProfileEditor,
-        UserFeedback,
-        User,
-        Button,
-        DocumentEditor
-    },
-    data() {
-        return {
-            loggedInUser: null,
-            showUserFeedback: false,
-            showDocumentEditor: false,
-            showProfileEditor: false,
-            showChat: false,
-            items: [
-                {
-                    separator: true
-                },
-                {
-                    label: 'Documents',
-                    items: [
-                        {
-                            label: 'New',
-                            icon: 'pi pi-plus',
-                            shortcut: '⌘+N'
-                        },
-                        {
-                            label: 'Search',
-                            icon: 'pi pi-search',
-                            shortcut: '⌘+S'
-                        }
-                    ]
-                },
-                {
-                    label: 'Profile',
-                    items: [
-                        {
-                            label: 'Settings',
-                            icon: 'pi pi-cog',
-                            shortcut: '⌘+O'
-                        },
-                        {
-                            label: 'Messages',
-                            icon: 'pi pi-inbox',
-                            badge: 2
-                        },
-                        {
-                            label: 'Logout',
-                            icon: 'pi pi-sign-out',
-                            shortcut: '⌘+Q'
-                        }
-                    ]
-                },
-                {
-                    separator: true
-                }
-            ]
-        }
-    },
-    methods: {
-        onLoggedIn(loggedInUser) {
-            this.loggedInUser = loggedInUser;
-            this.showChat = true;
-        },
-        onLoggedOut() {
-            this.loggedInUser = null;
+	props: {},
+	components: {
+		Login,
+		Chat,
+		ProfileEditor,
+		UserFeedback,
+		User,
+		DocumentEditor,
+		Button,
+		Menu
+	},
+	data() {
+		return {
+			loggedInUser: null,
+			showProfileEditor: false,
+			showUserFeedback: false,
+			showDocumentEditor: false,
+			showChat: false,
+			showUsers: false,
+			items: [
+				{
+					label: 'Options',
+					items: [
+						{
+							label: 'Profile',
+							icon: PrimeIcons.USER_EDIT,
+                            command: () => this.onShowProfileEditor()
+
+						},
+						{
+							label: 'Logout',
+							icon: PrimeIcons.SIGN_OUT,
+                            command: () => this.onLoggedOut()
+						}
+					]
+				}
+			]
+		}
+	},
+	methods: {
+		onLoggedIn(loggedInUser) {
+			this.loggedInUser = loggedInUser;
             this.hideAll();
-        },
-        hideAll() {
-            this.showChat = false;
-            this.showDocumentEditor = false;
+			this.showChat = true;
+		},
+		onLoggedOut() {
+			this.loggedInUser = null;
+			this.hideAll();
+		},
+        async onShowProfileEditor() {
             this.showProfileEditor = false;
-            this.showUserFeedback = false;
-        }
-    },
-    watch: {
-        showProfileEditor() {
-            if (this.showProfileEditor) {
-                this.showDocumentEditor = false;
-                this.showUserFeedback = false;
-                this.showChat = false;
-            }
+            await nextTick();
+            this.showProfileEditor = true;
         },
-        showDocumentEditor() {
-            if (this.showDocumentEditor) {
-                this.showProfileEditor = false;
-                this.showUserFeedback = false;
-                this.showChat = false;
-            }
-        },
-        showChat() {
-            if (this.showChat) {
-                this.showProfileEditor = false;
-                this.showUserFeedback = false;
-                this.showDocumentEditor = false;
-            }
-        },
-    }
+		hideAll() {
+			this.showChat = false;
+			this.showDocumentEditor = false;
+			this.showUserFeedback = false;
+		},
+		toggleMenu(event) {
+			this.$refs.menu.toggle(event);
+		}
+	},
+	watch: {
+		showDocumentEditor() {
+			if (this.showDocumentEditor) {
+				this.showUserFeedback = false;
+				this.showChat = false;
+				this.showUsers = false;
+			}
+		},
+		showChat() {
+			if (this.showChat) {
+				this.showUserFeedback = false;
+				this.showDocumentEditor = false;
+				this.showUsers = false;
+			}
+		},
+		showUsers() {
+			if (this.showUsers) {
+				this.showUserFeedback = false;
+				this.showDocumentEditor = false;
+				this.showChat = false;
+			}
+		},
+		showUserFeedback() {
+			if (this.showUserFeedback) {
+				this.showUsers = false;
+				this.showDocumentEditor = false;
+				this.showChat = false;
+			}
+		}
+	}
 }
 </script>
 
@@ -152,6 +150,7 @@ export default {
 .home {
 	display: flex;
 	height: 100vh;
+
 	&__sidebar {
 		background: $sidebar;
 		border-right: 1px solid $border;
@@ -161,21 +160,38 @@ export default {
 		gap: 1rem;
 		padding: 1rem;
 	}
+
 	&__content {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
 	}
+
 	&__header {
 		padding: 1rem;
 		border-bottom: 1px solid $border;
 		display: flex;
-		justify-content: end;
+		width: 100%;
+		justify-content: space-between;
 	}
+	&__welcome {
+		flex: 1;
+		line-height: 0;
+		margin: auto 0;
+	}
+	&__profile {
+		display: flex;
+		gap: 1rem;
+
+	}
+	&__user {
+		line-height: 0;
+		margin: auto 0;
+	}
+
 	&__body {
 		flex: 1;
 		overflow: hidden;
-
 	}
 }
 </style>

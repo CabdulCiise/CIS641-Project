@@ -18,10 +18,13 @@
 
 <script>
 import axios from 'axios';
+
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Dialog from 'primevue/dialog'
 import TextArea from 'primevue/textarea'
+
+import { showNotification } from '../services/notification'
 
 export default {
     props: {
@@ -47,6 +50,9 @@ export default {
             })
                 .then((res) => {
                     this.customInstruction = res.data;
+                    this.visible = false;
+
+                    showNotification("Success", "User Profile Updated.", "success", 2000);
                 })
                 .catch((error) => {
                     console.error(error);

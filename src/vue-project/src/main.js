@@ -11,11 +11,17 @@ import PrimeVue from 'primevue/config';
 import PrimeIcons from 'primevue/config';
 import Tooltip from 'primevue/tooltip';
 
+import ToastService from "primevue/toastservice";
+import setupPrimeVueServices from "@/services/primevue";
+
 const app = createApp(App);
 
 app.use(router);
 app.use(PrimeVue);
 app.use(PrimeIcons);
+app.use(ToastService);
 app.directive('tooltip', Tooltip);
+
+setupPrimeVueServices(app);
 
 app.mount('#app')

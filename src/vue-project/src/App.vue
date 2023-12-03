@@ -1,17 +1,17 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-</script>
-
 <template>
-  <!-- <header>
-    <nav>
-      <RouterLink to="/user-feedback">User Feedback</RouterLink>
-    </nav>
-  </header> -->
-
   <RouterView />
+  <Toast position="bottom-right" />
 </template>
 
-<style lang="scss">
+<script>
+  import { RouterView } from 'vue-router'
+  import Toast from 'primevue/toast'
 
-</style>
+  export default {
+    props: {},
+    components: {
+      RouterView,
+      Toast
+    }
+  }
+</script>

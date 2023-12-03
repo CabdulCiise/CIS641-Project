@@ -28,20 +28,22 @@ processor.process(pdf_files_dir=pdf_files_dir)
 chain = chat_chain(store=vector_store_manager)
 
 @app.route('/user-feedback', methods=['GET', 'POST'])
-def get_user_feedbacks():
+def user_feedbacks():
     if request.method == 'POST':
         body = request.json
-        feedback = body["user_id"]
-        user_id = body["feedback"]
+        user_id = body["user_id"]
+        feedback = body["feedback"]
         return jsonify(UserFeedbackSchema().dump(database.create_user_feedback(user_id, feedback)))
     else:
         return jsonify(UserFeedbackSchema(many=True).dump(database.get_user_feedbacks()))
     
-@app.route('/user-feedback/archive', methods=['PUT'])
+@app.route('/user-feedback/archive', methods=['GET', 'PUT'])
 def archive_user_feedback():
-    print(request.args)
-    user_feedback_id = request.args["user_feedback_id"]
-    return jsonify(UserFeedbackSchema().dump(database.update_user_feedback(user_feedback_id, True)))
+    if request.method == 'PUT':
+        user_feedback_id = request.args["user_feedback_id"]
+        return jsonify(UserFeedbackSchema().dump(database.update_user_feedback(user_feedback_id, True)))
+    else:
+        return jsonify(UserFeedbackSchema(many=True).dump(database.get_user_feedbacks(only_archived=True)))
 
 @app.route('/role', methods=['GET'])
 def get_roles():
@@ -80,23 +82,35 @@ def login():
         user = database.get_user(username)
         
         if check_password(password, user.password):
-            return jsonify(UserSchema().dump(user))
+            user_data = UserSchema().dump(user)
+            user_data["success"] = True
+            return jsonify(user_data)
         
-        return jsonify("Error failed to login")
+    return jsonify({ 
+        "errorMessage": "Error failed to login",
+        "success": False
+    })
     
 @app.route('/register', methods=['POST'])
 def register():
+    error = "Error failed to register"
+    
     if request.method == 'POST':
         body = request.json
         username = body["username"]
         password = body["password"]
         
-        user = database.create_user(username, password)
+        user, error = database.create_user(username, password)
         
         if user:
-            return jsonify(UserSchema().dump(user))
+            user_data = UserSchema().dump(user)
+            user_data["success"] = True
+            return jsonify(user_data)
         
-        return jsonify("Error failed to register")
+    return jsonify({ 
+        "errorMessage": error,
+        "success": False
+    })
     
 @app.route('/document', methods=['GET', 'POST', 'DELETE'])
 def document():

@@ -57,15 +57,22 @@ class Database:
         return self._connection.execute(statement=stmt).fetchall()
     
     def create_user(self, username, password, role="user"):
-        stmt = insert(User).values(
-            username=username,
-            password=get_hashed_password(password),
-            user_role_id=1 if role == "admin" else 2
-        ).returning(User)
+        user = self.get_user(username)
+        added_user = None
+        
+        if not user:
+            stmt = insert(User).values(
+                username=username,
+                password=get_hashed_password(password),
+                user_role_id=1 if role == "admin" else 2
+            ).returning(User)
 
-        added_user = self._connection.execute(statement=stmt).fetchone()
-        self._connection.commit()
-        return added_user
+            added_user = self._connection.execute(statement=stmt).fetchone()
+            self._connection.commit()
+        else:
+            return added_user, "Username is not available."
+
+        return added_user, None
     
     def update_user(self, user_id, role):
         session = Session(self._engine)
@@ -92,17 +99,14 @@ class Database:
 
         return session.scalars(statement=stmt).all()
     
-    def get_user_feedbacks(self, include_archived=False):
-        stmt = select(UserFeedback)
-        
-        if not include_archived:
-            stmt = stmt.where(UserFeedback.is_archived == False)
+    def get_user_feedbacks(self, only_archived=False):
+        stmt = select(UserFeedback).where(UserFeedback.is_archived == only_archived).order_by(UserFeedback.created_date.desc())
 
         return self._connection.execute(statement=stmt).fetchall()
 
     def create_user_feedback(self, user_id, feedback):
         stmt = insert(UserFeedback).values(
-            user_id=user_id,
+            owner_id=user_id,
             is_archived=False,
             feedback=feedback,
         ).returning(UserFeedback)

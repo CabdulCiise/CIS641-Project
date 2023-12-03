@@ -24,19 +24,25 @@
 				</span>
 				<Button icon="pi pi-refresh"
 						text
-						disabled="!!messages"
+						:disabled="!messages || messages.length == 0"
 						v-tooltip.top="'Reset'"
 						@click="onChatReset"/>
-
+				<Button icon="pi pi-thumbs-up"
+						text
+						v-tooltip.left="'Leave Feedback'"
+						@click="onShowLeaveFeedback"/>
 			</div>
 		</div>
 	</div>
+	<LeaveFeedback :visible="showLeaveFeedback" :logged-in-user="loggedInUser"/>
 </template>
 
 <script>
 import axios from 'axios'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+
+import LeaveFeedback from '../components/LeaveFeedback.vue'
 import { nextTick } from 'vue'
 
 export default {
@@ -45,13 +51,15 @@ export default {
 	},
 	components: {
 		Button,
-		InputText
+		InputText,
+        LeaveFeedback
 	},
 	data() {
 		return {
 			isHandlingAQuery: false,
 			query: "",
-			messages: []
+			messages: [],
+			showLeaveFeedback: false
 		}
 	},
 	methods: {
@@ -86,7 +94,7 @@ export default {
 					if (done) {
 						break;
 					}
-					
+
 					const chunkText = textDecoder.decode(value);
 					this.addToLastMessage(chunkText)
 				}
@@ -105,13 +113,17 @@ export default {
 				});
 		},
 		addToLastMessage(chunk) {
-			console.log(chunk);
 			if (this.messages[this.messages.length - 1].response == null) {
 				this.messages[this.messages.length - 1].response = chunk;
 			}
 			else {
 				this.messages[this.messages.length - 1].response += chunk;
 			}
+		},
+		async onShowLeaveFeedback() {
+			this.showLeaveFeedback = false;
+			await nextTick();
+			this.showLeaveFeedback = true;
 		}
 	}
 }
