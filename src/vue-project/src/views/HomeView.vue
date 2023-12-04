@@ -34,7 +34,7 @@
 				<ProfileEditor v-if="showProfileEditor" :logged-in-user="loggedInUser"/>
 				<User v-if="showUsers"/>
 				<UserFeedback v-if="showUserFeedback"/>
-				<DocumentEditor v-if="showDocumentEditor"/>
+				<DocumentEditor v-if="showDocumentEditor" :logged-in-user="loggedInUser"/>
 				<Chat v-if="showChat" :logged-in-user="loggedInUser"/>
 			</div>
 		</div>

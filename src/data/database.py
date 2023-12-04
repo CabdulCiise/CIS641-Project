@@ -125,22 +125,25 @@ class Database:
         return updated_feedback
     
     def create_uploaded_doc(self, user_id, file_name):
-        session = Session(self._engine)
         stmt = insert(UploadedDoc).values(
-            user_id=user_id,
+            uploader_id=user_id,
             name=file_name,
         ).returning(UploadedDoc)
 
-        added_file = session.scalar(statement=stmt)
-        session.commit()
+        added_file = self._connection.execute(statement=stmt).fetchone()
+        self._connection.commit()
         return added_file
     
-    def delete_uploaded_doc(self, file_name):
-        session = Session(self._engine)
-        stmt = delete(UploadedDoc).where(UploadedDoc.name == file_name)
+    def delete_uploaded_doc(self, uploaded_doc_id = None, file_name = None):
+        stmt = delete(UploadedDoc)
+        
+        if uploaded_doc_id:
+            stmt = stmt.where(UploadedDoc.uploaded_doc_id == uploaded_doc_id)
+        elif file_name:
+            stmt = stmt.where(UploadedDoc.name == file_name)
 
-        session.execute(statement=stmt)
-        session.commit()
+        self._connection.execute(statement=stmt)
+        self._connection.commit()
     
     def get_uploaded_docs(self):
         stmt = select(UploadedDoc)

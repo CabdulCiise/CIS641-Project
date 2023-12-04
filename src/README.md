@@ -24,8 +24,15 @@ Then run either the console app by running
 python ./console.py
 ```
 
-or the UI by running
+or the UI and API by running
 
 ```bash
-streamlit run ./app.py
+npm install
+npm run dev
+```
+
+and 
+
+```bash
+flask run --port=5000 --debug
 ```

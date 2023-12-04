@@ -70,7 +70,7 @@ export default {
                         this.$emit('logged-in', this.loggedInUser);
                     }
                     else {
-                        showNotification("Error", "Login failed.", "success", 2000);
+                        showNotification("Error", "Login failed.", "error", 2000);
                     }
             })
             .catch((error) => {
@@ -89,7 +89,7 @@ export default {
                         this.$emit('logged-in', this.loggedInUser);
                     }
                     else {
-                        showNotification("Error", res.data.errorMessage, "success", 2000);
+                        showNotification("Error", res.data.errorMessage, "error", 2000);
                     }
                 })
                 .catch((error) => {

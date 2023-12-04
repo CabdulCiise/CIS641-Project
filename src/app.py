@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 
+import os
+
 from data.database import Database
 from modules.pdf_processor import pdf_processor
 from modules.store_manager import store_manager
@@ -9,11 +11,15 @@ from modules.chat_chain import chat_chain
 from data.database import Database
 from modules.globals import pdf_files_dir
 from modules.helpers import UserSchema, RoleSchema, UserFeedbackSchema, UploadedDocSchema, check_password
+from modules.globals import pdf_files_dir
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 CORS(app, resources={r'/*': {'origins': '*'}})
+
+if not os.path.exists(pdf_files_dir):
+    os.makedirs(pdf_files_dir)
 
 vector_store_manager = store_manager(embedding_type=embedding_types.OPENAIEMBEDDINGS)
     
@@ -114,17 +120,42 @@ def register():
 def document():
     if request.method == 'GET':
         return jsonify(UploadedDocSchema(many=True).dump(database.get_uploaded_docs()))
+    elif request.method == 'DELETE':
+        print(request.args)
+        filename = request.args["file_name"]
+        uploaded_doc_id = request.args["uploaded_doc_id"]
+
+        file_path = os.path.join(pdf_files_dir, filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        database.delete_uploaded_doc(uploaded_doc_id)
+        return jsonify({'message': 'File deleted successfully.'}), 200
     elif request.method == 'POST':
-        body = request.json
-        username = body["username"]
-        password = body["password"]
+        # Check if the post request has the file part
+        if 'file' not in request.files:
+            return jsonify({'message': 'No file part in the request'}), 400
+
+        file = request.files['file']
+
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            return jsonify({'message': 'No selected file'}), 400
+
+        if file and file.filename.lower().endswith('.pdf'):
+            file_path = os.path.join(pdf_files_dir, file.filename)
+            if not os.path.exists(file_path):
+                file.save(file_path)
+                user_id = request.form.get('user_id')
+                added_file = database.create_uploaded_doc(user_id, file.filename)
+                
+                if added_file:
+                    return jsonify(UploadedDocSchema().dump(added_file))
+            else:
+                return jsonify("File w/ same name has been uploaded already."), 400
         
-        user = database.create_user(username, password)
-        
-        if check_password(password, user.password):
-            return jsonify(UserSchema().dump(user))
-        
-    return jsonify("Error failed to register")
+    return jsonify("Error processing files."), 400
     
 @app.route('/chat', methods=['GET'])
 def chat():

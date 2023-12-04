@@ -104,6 +104,12 @@
 .user-page {
 	padding: 1rem;
 	height: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	&__heading {
+		margin: 0;
+	}
 	&__content {
 		position: relative;
 		height: 100%;
