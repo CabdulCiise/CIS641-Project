@@ -11,7 +11,6 @@ from modules.chat_chain import chat_chain
 from data.database import Database
 from modules.globals import pdf_files_dir
 from modules.helpers import UserSchema, RoleSchema, UserFeedbackSchema, UploadedDocSchema, check_password
-from modules.globals import pdf_files_dir
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -121,15 +120,16 @@ def document():
     if request.method == 'GET':
         return jsonify(UploadedDocSchema(many=True).dump(database.get_uploaded_docs()))
     elif request.method == 'DELETE':
-        print(request.args)
         filename = request.args["file_name"]
         uploaded_doc_id = request.args["uploaded_doc_id"]
 
         file_path = os.path.join(pdf_files_dir, filename)
+        database.delete_uploaded_doc(uploaded_doc_id)
+        
         if os.path.exists(file_path):
             os.remove(file_path)
+            processor.process(pdf_files_dir=pdf_files_dir)
 
-        database.delete_uploaded_doc(uploaded_doc_id)
         return jsonify({'message': 'File deleted successfully.'}), 200
     elif request.method == 'POST':
         # Check if the post request has the file part
@@ -149,6 +149,8 @@ def document():
                 file.save(file_path)
                 user_id = request.form.get('user_id')
                 added_file = database.create_uploaded_doc(user_id, file.filename)
+
+                processor.process(pdf_files_dir)
                 
                 if added_file:
                     return jsonify(UploadedDocSchema().dump(added_file))

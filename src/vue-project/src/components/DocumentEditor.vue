@@ -132,7 +132,7 @@ export default {
             console.log('Upload Error:', event);
         }
     },
-    created() {
+    mounted() {
         this.getUploadedDocuments();
     }
 }

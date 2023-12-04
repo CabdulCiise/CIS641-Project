@@ -26,9 +26,10 @@ class chat_chain:
 
     def get_prompt(self, custom_instructions=None):
         if custom_instructions:
-            template = f"""Answer the question based only on the following context: {{context}}
+            template = f"""Answer the question based only on the context provided. 
+                Here are custom instructions to consider when responding: {custom_instructions}
                 If a question is not related to this context, respond with "I am not sure on this".
-                Also, here are custom instructions to consider as well. {custom_instructions}
+                Here's the context: {{context}}
                 Question: {{question}}
                 """
         else:
