@@ -4,15 +4,19 @@
 	<div v-else class="home">
 		<div class="home__sidebar">
 			<Button icon="pi pi-comments"
+					v-if="isAdmin"
 			        v-tooltip="'Chat'"
 			        @click="showChat = true"/>
 			<Button icon="pi pi-file-edit"
+					v-if="isAdmin"
 			        v-tooltip="'Document Editor'"
 			        @click="showDocumentEditor = true"/>
 			<Button icon="pi pi-users"
+					v-if="isAdmin"
 			        v-tooltip="'Users'"
 			        @click="showUsers = true"/>
 			<Button icon="pi pi-check"
+					v-if="isAdmin"
 			        v-tooltip="'Review Feedback'"
 			        @click="showUserFeedback = true"/>
 		</div>
@@ -38,6 +42,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 import Login from '../components/Login.vue'
 import Chat from '../components/Chat.vue'
 import ProfileEditor from '../components/ProfileEditor.vue'
@@ -69,6 +75,7 @@ export default {
 			showDocumentEditor: false,
 			showChat: false,
 			showUsers: false,
+			adminRoleId: null,
 			items: [
 				{
 					label: 'Options',
@@ -111,7 +118,17 @@ export default {
 		},
 		toggleMenu(event) {
 			this.$refs.menu.toggle(event);
-		}
+		},
+		getRoles() {
+			axios.get('http://localhost:5000/role')
+			.then((res) => {
+				const adminRoles = res.data.filter(role => role.name === "admin");
+				this.adminRoleId = adminRoles.length > 0 ? adminRoles[0].role_id : null;
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+		},
 	},
 	watch: {
 		showDocumentEditor() {
@@ -142,6 +159,19 @@ export default {
 				this.showChat = false;
 			}
 		}
+	},
+	computed: {
+		isAdmin() {
+			if (this.loggedInUser != null && this.adminRoleId === this.loggedInUser.user_role_id) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	},
+	created() {
+		this.getRoles();
 	}
 }
 </script>

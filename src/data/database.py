@@ -74,14 +74,13 @@ class Database:
 
         return added_user, None
     
-    def update_user(self, user_id, role):
-        session = Session(self._engine)
+    def update_user(self, user_id, role_id):
         stmt = update(User).where(User.user_id == user_id).values(
-            role_id=1 if role == "admin" else 2,
+            user_role_id=role_id
         ).returning(User)
 
-        updated_user = session.scalar(statement=stmt)
-        session.commit()
+        updated_user = self._connection.execute(statement=stmt).fetchone()
+        self._connection.commit()
         return updated_user
     
     def update_custom_instruction(self, user_id, custom_instruction):
@@ -144,6 +143,5 @@ class Database:
         session.commit()
     
     def get_uploaded_docs(self):
-        session = Session(self._engine)
         stmt = select(UploadedDoc)
-        return session.scalars(statement=stmt)
+        return self._connection.execute(statement=stmt).fetchall()

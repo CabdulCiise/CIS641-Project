@@ -10,11 +10,9 @@ from data.database import Database
 from modules.globals import pdf_files_dir
 from modules.helpers import UserSchema, RoleSchema, UserFeedbackSchema, UploadedDocSchema, check_password
 
-# instantiate the app
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-# enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 vector_store_manager = store_manager(embedding_type=embedding_types.OPENAIEMBEDDINGS)
@@ -54,8 +52,8 @@ def users():
     if request.method == 'PUT':
         body = request.json
         user_id = body["user_id"]
-        role = body["role"]
-        return jsonify(UserSchema().dump(database.update_user(user_id, role)))
+        role_id = body["role_id"]
+        return jsonify(UserSchema().dump(database.update_user(user_id, role_id)))
     else:
         return jsonify(UserSchema(many=True).dump(database.get_users()))
     
@@ -94,7 +92,7 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     error = "Error failed to register"
-    
+
     if request.method == 'POST':
         body = request.json
         username = body["username"]

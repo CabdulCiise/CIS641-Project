@@ -1,5 +1,6 @@
 <template>
 	<div class="user-feedback">
+		<h3 class="user-feedback__heading">Review User Feedback</h3>
 		<TabView>
 			<TabPanel header="New">
 				<div class="user-feedback__panel">
@@ -19,7 +20,7 @@
 									<template #body="{ data }">{{ dateFormat(data.created_date) }}</template>
 								</Column>
 								<Column field="feedback" sortable header="Feedback" style="width: 75%"></Column>
-								<Column field="" header="" style="width: 10%">
+								<Column field="" header="Archive" style="width: 10%">
 									<template #body="slotProps">
 										<Button label="Archive" @click="archiveUserFeedback(slotProps.data.user_feedback_id)"/>
 									</template>
@@ -117,7 +118,6 @@ export default {
 				});
 		},
 		dateFormat(date) {
-			console.log(date)
 			return moment(date).format('MM-DD-YYYY HH:mm');
 		},
 	},
@@ -163,6 +163,10 @@ export default {
 		left: 0;
 		right: 0;
 		bottom: 0;
+	}
+
+	&__heading {
+		margin-top: 0;
 	}
 }
 </style>
