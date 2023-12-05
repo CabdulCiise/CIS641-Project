@@ -97,7 +97,7 @@ export default {
                 });
             }
             else {
-                showNotification("Error", "Passwords do not match.", "success", 2000);
+                showNotification("Error", "Passwords do not match.", "error", 2000);
             }
         },
         onRegistering() {
